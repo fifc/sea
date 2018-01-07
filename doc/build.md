@@ -44,3 +44,8 @@
 	- ./configure --prefix=/g/pkg --with-openssl
 	- make -j 4 && make install
 
+# redis
+	- curl -L -O https://github.com/antirez/redis/archive/unstable.tar.gz
+	- make
+	- make PREFIX=/g/pkg install
+
