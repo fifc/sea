@@ -15,14 +15,15 @@
 	- make -j 4 && make install
 
 # curl
+	- rm -rf /g/pkg/include/curl /g/pkg/lib/libcurl.*
 	- ./buildconf
-	- ./configure --prefix=/g/pkg --with-nghttp2=/g/pkg
+	- ./configure --prefix=/g/pkg --with-nghttp2=/g/pkg --with-libssh2
 	- make && make install
 
 # gtest
 	- see mai/gtest
 
-# gflags:
+# gflags
 	- cmake -DCMAKE_INSTALL_PREFIX=/g/pkg -DBUILD_SHARED_LIBS=ON ..
 
 # glog:
@@ -49,3 +50,24 @@
 	- make
 	- make PREFIX=/g/pkg install
 
+# hiredis
+	- make PREFIX=/g/pkg install 
+
+# mosquitto
+	- config.mk: prefix=/g/pkg
+	- make CFLAGS=-I/g/pkg/include LDFLAGS="-L/g/pkg/lib -luv"
+	- make install
+	- mkdir /g/pkg/etc && mv /etc/mosquitto /g/pkg/etc/
+
+# protobuf
+	- ./autogen.sh -i
+	- ./configure --prefix=/g/pkg
+	- make -j 5 && make install
+
+# grpc
+	- git submodule update --init
+	- make prefix=/g/pkg CFLAGS=-I/g/pkg/include CXXFLAGS=-I/g/pkg/include LDFLAGS=-L/g/pkg/lib install
+
+# yaml-cpp
+	mkdir build && cd build
+	cmake -DBUILD_SHARED_LIBS=ON -DCMAKE_INSTALL_PREFIX=/g/pkg ..
