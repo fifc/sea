@@ -8,10 +8,11 @@
 	- make && make install
 
 # nghttp2
+	- rm -rf /g/pkg/include/nghttp2 /g/pkg/lib/libnghttp2*
 	- autoreconf -i
 	- automake
 	- autoconf
-	- ./configure PYTHON=/usr/bin/python3.6 --prefix=/g/pkg --enable-app --enable-examples --with-boost=/g/pkg --enable-asio-lib
+	- ./configure PYTHON=/usr/bin/python3 --prefix=/g/pkg --enable-app --enable-examples --with-boost=/g/pkg --enable-asio-lib
 	- make -j 4 && make install
 
 # curl
@@ -71,3 +72,11 @@
 # yaml-cpp
 	mkdir build && cd build
 	cmake -DBUILD_SHARED_LIBS=ON -DCMAKE_INSTALL_PREFIX=/g/pkg ..
+
+# jsoncpp
+	- export DESTDIR=/g/pkg
+	- meson --buildtype release --default-library shared . build-release
+	- ninja -v -C build-release install
+	- move it from $DESTDIR/usr/local to $DESTDIR
+
+
