@@ -1,6 +1,11 @@
+# jemalloc
+	- ./autogen.sh
+	- make dist
+	- make
+	- make install
 # boost
 	- ./bootstrap.sh --prefix=/g/pkg
-	- ./b2 install
+	- ./b2 variant=release install
 
 # libuv
 	- sh ./autogen.sh
@@ -22,7 +27,7 @@
 	- make && make install
 
 # gtest
-	- see mai/gtest
+	- see sea/gtest
 
 # gflags
 	- cmake -DCMAKE_INSTALL_PREFIX=/g/pkg -DBUILD_SHARED_LIBS=ON ..
@@ -31,11 +36,14 @@
 	- ./configure --with-gflags=/g/pkg --prefix=/g/pkg
 
 # libwebsockets:
-	- cmake .. -DCMAKE_INSTALL_PREFIX=/g/pkg  -DLWS_IPV6=ON -DLWS_WITH_LIBUV=ON -DLWS_LIBUV_LIBRARIES=/g/pkg/lib -DLWS_LIBUV_INCLUDE_DIRS=/g/pkg/include
+	- rm -rf /g/pkg/include/libwebsockets.h /g/pkg/lib/libwebsockets.*
+	- cmake .. -DCMAKE_INSTALL_PREFIX=/g/pkg  -DLWS_IPV6=ON -DLWS_WITH_LIBUV=ON -DLWS_LIBUV_LIBRARIES=/g/pkg/lib/libuv.so -DLWS_LIBUV_INCLUDE_DIRS=/g/pkg/include
 	- make VERBOSE=1
 
 # postgresql
+	- rm -rf /g/pkg/include/postgres* /g/pkg/lib/libpq.* /g/pkg/lib/libpg*
 	- curl -O -L https://ftp.postgresql.org/pub/snapshot/dev/postgresql-snapshot.tar.bz2
+	- ./configure --prefix=/g/pkg --with-openssl
 
 # nginx
 	- ./configure --prefix=/g/nginx --with-http_v2_module --with-http_ssl_module --with-mail_ssl_module --with-stream_ssl_module --with-stream_ssl_preread_module
@@ -55,27 +63,31 @@
 	- make PREFIX=/g/pkg install 
 
 # mosquitto
-	- config.mk: prefix=/g/pkg
+	- config.mk: prefix=/g/pkg WITH_WEBSOCKETS:=yes
 	- make CFLAGS=-I/g/pkg/include LDFLAGS="-L/g/pkg/lib -luv"
 	- make install
 	- mkdir /g/pkg/etc && mv /etc/mosquitto /g/pkg/etc/
 
 # protobuf
+	- rm -rf /g/pkg/include/google/protobuf /g/pkg/lib/libprotobuf* /g/pkg/lib/libprotoc.*
 	- ./autogen.sh -i
 	- ./configure --prefix=/g/pkg
 	- make -j 5 && make install
 
 # grpc
-	- git submodule update --init
+	- rm -rf /g/pkg/include/grpc /g/pkg/lib/libgrpc*
+	- git submodule update --init (or: git pull --recurse-submodules)
 	- make prefix=/g/pkg CFLAGS=-I/g/pkg/include CXXFLAGS=-I/g/pkg/include LDFLAGS=-L/g/pkg/lib install
 
 # yaml-cpp
-	mkdir build && cd build
-	cmake -DBUILD_SHARED_LIBS=ON -DCMAKE_INSTALL_PREFIX=/g/pkg ..
+	- rm -rf /g/pkg/include/yaml-cpp /g/pkg/lib/libyaml*
+	- mkdir build && cd build
+	- cmake -DBUILD_SHARED_LIBS=ON -DCMAKE_INSTALL_PREFIX=/g/pkg ..
 
 # jsoncpp
 	- export DESTDIR=/g/pkg
-	- meson --buildtype release --default-library shared . build-release
+	- make build && cd build
+	- meson --buildtype release --default-library shared .. build-release
 	- ninja -v -C build-release install
 	- move it from $DESTDIR/usr/local to $DESTDIR
 
