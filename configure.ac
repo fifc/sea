@@ -1,4 +1,4 @@
-AC_INIT([amhello], [1.0], [bug-automake@gnu.org])
+AC_INIT([sea], [1.0], [y@ffox.top])
 dnl AM_INIT_AUTOMAKE([-Wall -Werror foreign])
 AM_INIT_AUTOMAKE([-Wall -Werror])
 AC_PROG_CC
