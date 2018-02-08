@@ -1,5 +1,6 @@
 AC_INIT([amhello], [1.0], [bug-automake@gnu.org])
-AM_INIT_AUTOMAKE([-Wall -Werror foreign])
+dnl AM_INIT_AUTOMAKE([-Wall -Werror foreign])
+AM_INIT_AUTOMAKE([-Wall -Werror])
 AC_PROG_CC
 AC_PROG_CXX
 AC_CONFIG_HEADERS([config.h])
