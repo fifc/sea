@@ -28,6 +28,5 @@ AC_CONFIG_FILES([
  Makefile
  src/Makefile
  lib/Makefile
- proto/rules.mk
 ])
 AC_OUTPUT

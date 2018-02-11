@@ -1,5 +1,6 @@
-ACLOCAL_AMFLAGS=-I m4 
-
 SUBDIRS = lib src
+
+ACLOCAL_AMFLAGS = -I m4
+
 dist_doc_DATA = README.md
-dist_noinst_DATA = proto
+# dist_noinst_DATA = proto

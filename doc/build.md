@@ -33,6 +33,7 @@
 	- cmake -DCMAKE_INSTALL_PREFIX=/g/pkg -DBUILD_SHARED_LIBS=ON ..
 
 # glog:
+	- rm -rf /g/pkg/include/glog /g/pkg/lib/libglog.*
 	- ./configure --with-gflags=/g/pkg --prefix=/g/pkg
 
 # libwebsockets:
@@ -63,8 +64,10 @@
 	- make PREFIX=/g/pkg install 
 
 # mosquitto
-	- config.mk: prefix=/g/pkg WITH_WEBSOCKETS:=yes
-	- make CFLAGS=-I/g/pkg/include LDFLAGS="-L/g/pkg/lib -luv"
+	- rm -rf  /g/pkg/include/mosquitto* /g/pkg/lib/libmosquitto*
+	- git checkout -b remotes/origin/develop
+	- config.mk: prefix=/g/pkg, WITH_WEBSOCKETS:=yes
+	- make CFLAGS=-I/g/pkg/include LDFLAGS="-L/g/pkg/lib -luv" -j 4
 	- make install
 	- mkdir /g/pkg/etc && mv /etc/mosquitto /g/pkg/etc/
 
@@ -94,3 +97,6 @@
 # ss-libev
 	- ./configure CC=gcc-8 --prefix=/opt --disable-documentation
 
+# librdkafka
+	- apt install liblz4-dev libsasl2-dev
+	- ./configure --prefix=/g/pkg

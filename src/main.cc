@@ -3,6 +3,7 @@
 
 #include "sea.grpc.pb.h"
 #include "sea.pb.h"
+#include "gw.h"
 
 int
 main (void)
