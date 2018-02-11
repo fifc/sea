@@ -91,4 +91,6 @@
 	- ninja -v -C build-release install
 	- move it from $DESTDIR/usr/local to $DESTDIR
 
+# ss-libev
+	- ./configure CC=gcc-8 --prefix=/opt --disable-documentation
 
