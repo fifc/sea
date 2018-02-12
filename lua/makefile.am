@@ -1,0 +1,11 @@
+bin_PROGRAMS = lt
+lt_SOURCES = lua_test.cc
+include_HEADERS=
+dist_pkgdata_DATA=test.lua
+AM_CPPFLAGS = -Dinfo="this is bypassed by target_CPPFLAGS!"
+lt_CPPFLAGS = -I/usr/include/lua5.3
+lt_CXXFLAGS = -pthread -I${abs_top_srcdir}/lib
+lt_LDFLAGS = -pthread -L${abs_top_builddir}/lib
+lt_LDADD = -llua5.3
+
+#include ${abs_top_srcdir}/../proto/rules.mk

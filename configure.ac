@@ -28,5 +28,6 @@ AC_CONFIG_FILES([
  Makefile
  src/Makefile
  lib/Makefile
+ lua/makefile
 ])
 AC_OUTPUT
