@@ -1,0 +1,78 @@
+--- /g/pkg/etc/mosquitto.conf.example	2018-01-08 16:43:01.849164682 +0800
++++ /g/pkg/etc/mosquitto.conf	2018-02-15 14:07:34.656500029 +0800
+@@ -133,7 +133,7 @@
+ #bind_address
+ 
+ # Port to use for the default listener.
+-#port 1883
++port 1883
+ 
+ # The maximum number of client connections to allow. This is 
+ # a per listener setting.
+@@ -164,7 +164,7 @@
+ # authorised when this option is set to true.
+ # Do not use in conjunction with clientid_prefixes.
+ # See also use_identity_as_username.
+-#use_username_as_clientid
++#use_username_as_clientid true
+ 
+ # -----------------------------------------------------------------
+ # Certificate based SSL/TLS support
+@@ -274,7 +274,7 @@
+ # Note that for a websockets listener it is not possible to bind to a host
+ # name.
+ # listener port-number [ip address/host name]
+-#listener
++listener 1884
+ 
+ # The maximum number of client connections to allow. This is 
+ # a per listener setting.
+@@ -294,13 +294,13 @@
+ # This can be either mqtt or websockets.
+ # Certificate based TLS may be used with websockets, except that only the
+ # cafile, certfile, keyfile and ciphers options are supported.
+-#protocol mqtt
++protocol websockets
+ 
+ # When a listener is using the websockets protocol, it is possible to serve
+ # http data as well. Set http_dir to a directory which contains the files you
+ # wish to serve. If this option is not specified, then no normal http
+ # connections will be possible.
+-#http_dir
++http_dir /home/y
+ 
+ # Set use_username_as_clientid to true to replace the clientid that a client
+ # connected with with its username. This allows authentication to be tied to
+@@ -336,10 +336,12 @@
+ #capath
+ 
+ # Path to the PEM encoded server certificate.
+-#certfile
++#certfile /g/pkg/cert/ffox.top.cert.pem
++certfile /g/pkg/cert/gego.cc_bundle.crt
+ 
+ # Path to the PEM encoded keyfile.
+-#keyfile
++#keyfile /g/pkg/cert/ffox.top.key.pem
++keyfile /g/pkg/cert/gego.cc.key
+ 
+ # By default an TLS enabled listener will operate in a similar fashion to a
+ # https enabled web server, in that the server has a certificate signed by a CA
+@@ -510,7 +512,7 @@
+ # false then a password file should be created (see the 
+ # password_file option) to control authenticated client access. 
+ # Defaults to true.
+-#allow_anonymous true
++allow_anonymous false
+ 
+ # In addition to the clientid_prefixes, allow_anonymous and TLS 
+ # authentication options, username based authentication is also 
+@@ -519,7 +521,7 @@
+ # allows another authentication method to be used.
+ # Specify the path to the loadable plugin and see the 
+ # "Authentication and topic access plugin options" section below.
+-#auth_plugin
++auth_plugin /g/pkg/lib/libmsq_auth.so
+ 
+ # If auth_plugin_deny_special_chars is true, the default, then before an ACL
+ # check is made, the username/client id of the client needing the check is
