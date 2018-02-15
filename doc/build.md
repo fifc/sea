@@ -67,7 +67,7 @@
 	- rm -rf  /g/pkg/include/mosquitto* /g/pkg/lib/libmosquitto*
 	- git checkout -b remotes/origin/develop
 	- config.mk: prefix=/g/pkg, WITH_WEBSOCKETS:=yes
-	- make CFLAGS=-I/g/pkg/include LDFLAGS="-L/g/pkg/lib -luv" -j 4
+	- make CFLAGS=-I/g/pkg/include LDFLAGS="-L/g/pkg/lib -luv -ljemalloc" -j 4
 	- make install
 	- mkdir /g/pkg/etc && mv /etc/mosquitto /g/pkg/etc/
 
