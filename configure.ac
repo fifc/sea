@@ -25,9 +25,9 @@ dnl PKG_CHECK_MODULES([grpc], [grpc])
 dnl PKG_CHECK_MODULES([protobuf], [protobuf])
 
 AC_CONFIG_FILES([
- Makefile
- src/Makefile
- lib/Makefile
+ makefile
+ src/makefile
+ lib/makefile
  lua/makefile
 ])
 AC_OUTPUT
