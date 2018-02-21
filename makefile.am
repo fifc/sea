@@ -1,4 +1,4 @@
-SUBDIRS = lib lua src
+SUBDIRS = lib sms lua src
 
 ACLOCAL_AMFLAGS = -I m4
 

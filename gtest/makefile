@@ -68,8 +68,7 @@ gtest_main.a : gtest-all.o gtest_main.o
 # gtest_main.a, depending on whether it defines its own main()
 # function.
 
-sample_unittest.o : sample_unittest.cc \
-                     $(GTEST_HEADERS)
+sample_unittest.o : sample_unittest.cc $(GTEST_HEADERS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c sample_unittest.cc
 
 sample_unittest : sample_unittest.o gtest_main.a

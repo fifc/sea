@@ -1,19 +1,20 @@
 #include <stdio.h>
 #include <string.h>
 #include <assert.h>
-
 #include <list>
 #include <iostream>
-using namespace std;
+
 extern "C" {
 #include <lua.h>
 #include <lauxlib.h>
 #include <lualib.h>
+
 	static int l_cppfunction(lua_State *L) {
 		double arg = luaL_checknumber(L,1);
 		lua_pushnumber(L, arg * 0.5);
 		return 1;
 	}
+
 	static int l_list_push(lua_State *L) { // Push elements from LUA
 		assert(lua_gettop(L) == 2); // check that the number of args is exactly 2 
 		std::list<int> **ud = static_cast<std::list<int> **>(luaL_checkudata(L,1, "ListMT")); // first arg is the list
@@ -35,30 +36,28 @@ extern "C" {
 	}
 }
 
-static void test_vars(lua_State *L)
-{
-	cout << "** Make a insert a global var into Lua from C++" << endl;
+static void test_vars(lua_State *L) {
+	std::cout << "** Make a insert a global var into Lua from C++" << std::endl;
 	lua_pushnumber(L, 1.1);
 	lua_setglobal(L, "cppvar");
 
-	cout << "** Execute the Lua chunk" << endl;
+	std::cout << "** Execute the Lua chunk" << std::endl;
 	if (lua_pcall(L,0, LUA_MULTRET, 0)) {
-		cerr << "Something went wrong during execution" << endl;
-		cerr << lua_tostring(L, -1) << endl;
+		std::cerr << "Something went wrong during execution" << std::endl;
+		std::cerr << lua_tostring(L, -1) << std::endl;
 		lua_pop(L,1);
 	}
 
-	cout << "** Read a global var from Lua into C++" << endl;
+	std::cout << "** Read a global var from Lua into C++" << std::endl;
 	lua_getglobal(L, "luavar");
 	double luavar = lua_tonumber(L,-1);
 	lua_pop(L,1);
-	cout << "C++ can read the value set from Lua luavar = " << luavar << endl;
+	std::cout << "C++ can read the value set from Lua luavar = " << luavar << std::endl;
 
 }
 
-static list<int> *create_object(lua_State *L)
-{
-	auto listObj = new list<int>();
+static std::list<int> *create_object(lua_State *L) {
+	auto listObj = new std::list<int>();
 	for (int i = 0; i < 5; ++i)
 		listObj->push_back(i);
 	std::cout << "Set the list object in lua" << std::endl;
@@ -79,38 +78,35 @@ static list<int> *create_object(lua_State *L)
 	return listObj;
 }
 
-static void test_lua_func(lua_State *L)
-{
-	cout << "** Execute a Lua function from C++" << endl;
+static void test_lua_func(lua_State *L) {
+	std::cout << "** Execute a Lua function from C++" << std::endl;
 	auto listObj = create_object(L);
 	lua_getglobal(L, "myluafunction");
 	lua_pushnumber(L, 5);
 	lua_pcall(L, 1, 1, 0);
-	cout << "The return value of the function was " << lua_tostring(L, -1) << endl;
+	std::cout << "The return value of the function was " << lua_tostring(L, -1) << std::endl;
 	lua_pop(L,1);
 	for (auto iter = listObj->begin(); iter != listObj->end(); ++iter)
-		cout << *iter << ", ";
-	cout << endl;
+		std::cout << *iter << ", ";
+	std::cout << std::endl;
 	delete listObj;
 }
 
-static void test_cpp_func(lua_State *L)
-{
-	cout << "** Execute a C++ function from Lua" << endl;
-	cout << "**** First register the function in Lua" << endl;
+static void test_cpp_func(lua_State *L) {
+	std::cout << "** Execute a C++ function from Lua" << std::endl;
+	std::cout << "**** First register the function in Lua" << std::endl;
 	lua_pushcfunction(L,l_cppfunction);
 	lua_setglobal(L, "cppfunction");
 
-	cout << "**** Call a Lua function that uses the C++ function" << endl;
+	std::cout << "**** Call a Lua function that uses the C++ function" << std::endl;
 	lua_getglobal(L, "myfunction");
 	lua_pushnumber(L, 5);
 	lua_pcall(L, 1, 1, 0);
-	cout << "The return value of the function was " << lua_tonumber(L, -1) << endl;
+	std::cout << "The return value of the function was " << lua_tonumber(L, -1) << std::endl;
 	lua_pop(L,1);
 }
 
-static void test_buf_run(lua_State *L)
-{
+static void test_buf_run(lua_State *L) {
 	char buf[1024];
 	while (fgets(buf, sizeof(buf), stdin) != NULL) {
 		auto error = luaL_loadbuffer(L, buf, strlen(buf), "line") ||
@@ -123,31 +119,29 @@ static void test_buf_run(lua_State *L)
 
 }
 
-lua_State *init_lua()
-{
-	cout << "** Init Lua" << endl;
+lua_State *init_lua() {
+	std::cout << "** Init Lua" << std::endl;
 	lua_State *L;
 	L = luaL_newstate();
-	cout << "** Load the (optional) standard libraries, to have the print function" << endl;
+	std::cout << "** Load the (optional) standard libraries, to have the print function" << std::endl;
 	luaL_openlibs(L);
-	cout << "** Load chunk. without executing it" << endl;
+	std::cout << "** Load chunk. without executing it" << std::endl;
 	if (luaL_loadfile(L, "test.lua")) {
-		cerr << "Something went wrong loading the chunk (syntax error?)" << endl;
-		cerr << lua_tostring(L, -1) << endl;
+		std::cerr << "Something went wrong loading the chunk (syntax error?)" << std::endl;
+		std::cerr << lua_tostring(L, -1) << std::endl;
 		lua_pop(L,1);
 	}
 	return L;
 }
 
-int main()
-{
-	cout << "** Test Lua embedding" << endl;
+int main() {
+	std::cout << "** Test Lua embedding" << std::endl;
 	auto L = init_lua();
 
 	test_vars(L);
 	test_lua_func(L);
 	test_cpp_func(L);
 
-	cout << "** Release the Lua enviroment" << endl;
+	std::cout << "** Release the Lua enviroment" << std::endl;
 	lua_close(L);
 }
