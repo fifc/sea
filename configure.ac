@@ -30,5 +30,6 @@ AC_CONFIG_FILES([
  lib/makefile
  lua/makefile
  sms/makefile
+ test/makefile
 ])
 AC_OUTPUT
