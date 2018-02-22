@@ -1,9 +1,11 @@
 bin_PROGRAMS = sea
-sea_SOURCES = common.pb.cc user.pb.cc sea.pb.cc sea.grpc.pb.cc main.cc cfg.cc picode.cc mimetypes.cc handler.cc db_mgr.cc
-include_HEADERS=sea.pb.h sea.grpc.pb.h cfg.h picode.h mimetypes.h handler.h db_mgr.h
+sea_SOURCES = proto.cc main.cc cfg.cc picode.cc mimetypes.cc handler.cc db_mgr.cc
+include_HEADERS=cfg.h picode.h mimetypes.h handler.h db_mgr.h
 sea_CPPFLAGS =
-sea_CXXFLAGS = -pthread -I${abs_top_srcdir}/lib
+sea_CXXFLAGS = -pthread -I${abs_top_srcdir} -I${abs_top_srcdir}/lib
 sea_LDFLAGS = -pthread -L${abs_top_builddir}/lib -L${abs_top_builddir}/sms -Wl,--no-as-needed -lgrpc++_reflection -Wl,--as-needed -ldl
 sea_LDADD = -lgw -lprotobuf -lgrpc++ -lgrpc -lgflags -lglog -lcurl -lnghttp2_asio -lboost_system -lssl -lcrypto -ljemalloc -lpng -lpq -lsms
+
+proto.cc: common.pb.cc user.pb.cc sea.pb.cc sea.grpc.pb.cc
 
 include ${abs_top_srcdir}/../proto/rules.mk

@@ -1,4 +1,5 @@
 lib_LIBRARIES = libsms.a
+include_HEADERS = url_encode.h send_sms.h
 libsms_a_SOURCES =  url_encode.c send_sms_curl.cc
 libsms_a_CPPFLAGS = #$(grpc_CFLAGS)
 libsms_a_CXXFLAGS = -pthread
@@ -6,7 +7,6 @@ libsms_a_LIBADD = #libprotobuf.so #$(grpc_LIBS)
 
 bin_PROGRAMS = testsms
 testsms_SOURCES = testsms.cc
-include_HEADERS=
 testsms_CPPFLAGS =
 testsms_CXXFLAGS = -pthread -I${abs_top_srcdir}/lib
 testsms_LDFLAGS = -pthread -L${abs_top_builddir}/lib -L.

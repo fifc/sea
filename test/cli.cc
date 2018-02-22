@@ -44,7 +44,7 @@ int main(int argc, char *argv[]) {
     std::string uri;
     if (argc > 1 && argv[1][0] != '-') {
       if (strchr(argv[1], '/') == NULL && strchr(argv[1], ':') == NULL) {
-	uri = "http://localhost/akago/";
+	uri = "http://localhost/sea/";
 	uri += argv[1];
       } else {
         if (strstr(argv[1], "://") == NULL) {

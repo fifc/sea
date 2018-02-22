@@ -1,6 +1,6 @@
 bin_PROGRAMS = cli pq
-cli_SOURCES = common.pb.cc user.pb.cc sea.pb.cc cli.cc testcase.cc getpicvericode_test.cc  html_test.cc  login_test.cc  signup_test.cc  smsvericode_test.cc
-include_HEADERS=sea.pb.h common.pb.h user.pb.h
+cli_SOURCES = proto.cc cli.cc testcase.cc getpicvericode_test.cc  html_test.cc  login_test.cc  signup_test.cc  smsvericode_test.cc
+include_HEADERS = getpicvericode_test.h  html_test.h  login_test.h  signup_test.h  smsvericode_test.h  testcase.h
 cli_CPPFLAGS =
 cli_CXXFLAGS = -pthread -I${abs_top_srcdir}/lib
 cli_LDFLAGS = -pthread -L${abs_top_builddir}/lib #-L${abs_top_builddir}/sms -Wl,--no-as-needed -lgrpc++_reflection -Wl,--as-needed -ldl
@@ -11,5 +11,7 @@ pq_CPPFLAGS =
 pq_CXXFLAGS = -pthread -I${abs_top_srcdir}/lib
 pq_LDFLAGS = -pthread -L${abs_top_builddir}/lib #-L${abs_top_builddir}/sms -Wl,--no-as-needed -lgrpc++_reflection -Wl,--as-needed -ldl
 pq_LDADD = -lpq -lboost_system -lssl -lcrypto -ljemalloc
+
+proto.cc: common.pb.cc user.pb.cc sea.pb.cc
 
 include ${abs_top_srcdir}/../proto/rules.mk
