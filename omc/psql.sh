@@ -1,0 +1,1 @@
+ exec psql postgres y
