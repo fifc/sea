@@ -44,7 +44,7 @@
 
 # postgresql
 	- rm -rf /g/pkg/include/postgres* /g/pkg/lib/libpq.* /g/pkg/lib/libpg*
-	- curl -O -L https://ftp.postgresql.org/pub/snapshot/dev/postgresql-snapshot.tar.bz2
+	- curl -OL https://ftp.postgresql.org/pub/snapshot/dev/postgresql-snapshot.tar.bz2
 	- ./configure --prefix=/g/pkg --with-openssl
 
 # nginx
@@ -52,12 +52,12 @@
 	- make -j 4 && make install
 
 # yarn
-	- curl -O -L https://nightly.yarnpkg.com/latest.tar.gz
+	- curl -OL https://nightly.yarnpkg.com/latest.tar.gz
 	- ./configure --prefix=/g/pkg --with-openssl
 	- make -j 4 && make install
 
 # redis
-	- curl -L -O https://github.com/antirez/redis/archive/unstable.tar.gz
+	- curl -LO https://github.com/antirez/redis/archive/unstable.tar.gz
 	- make
 	- make PREFIX=/g/pkg install
 
