@@ -103,7 +103,7 @@
 	- ./configure --prefix=/g/pkg
 
 # ngtcp2
-	- autoreconf -i
+	- rm -rf /g/pkg/include/librdkafka /g/pkg/lib/librdkafka*
 	- ./configure --prefix=/g/pkg CFLAGS=-I/g/pkg/include CXXFLAGS=-I/g/pkg/include LDFLAGS=-L/g/pkg/lib\ -Wl,-rpath,/g/ngtcp2/openssl/build/lib PKG_CONFIG_PATH=/g/ngtcp2/openssl/build/lib/pkgconfig
-	- make -j # or: make -j$(nproc)
+	- make -j4 # or: make -j$(nproc)
 
