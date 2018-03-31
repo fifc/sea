@@ -1,6 +1,6 @@
 /*!
- * protobuf.js v6.8.6 (c) 2016, daniel wirtz
- * compiled mon, 26 feb 2018 11:35:34 utc
+ * protobuf.js v6.8.7 (c) 2016, daniel wirtz
+ * compiled sat, 31 mar 2018 15:41:27 utc
  * licensed under the bsd-3-clause license
  * see: https://github.com/dcodeio/protobuf.js for details
  */
@@ -4548,6 +4548,7 @@ function parse(source, root, options) {
                     else
                         setOption(parent, name + "." + token, readValue(true));
                 }
+                skip(",", true);
             } while (!skip("}", true));
         } else
             setOption(parent, name, readValue(true));

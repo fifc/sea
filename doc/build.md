@@ -1,7 +1,6 @@
 # jemalloc
 	- ./autogen.sh
-	- make dist
-	- make
+	- ./configure --prefix=/g/ex
 	- make install
 
 # boost
@@ -9,6 +8,7 @@
 	- ./b2 variant=release install
 
 # libuv
+	- rm -rf /g/pkg/include/uv-* /g/pkg/include/uv.h /g/pkg/lib/libuv.*
 	- sh ./autogen.sh
 	- ./configure --prefix=/g/pkg
 	- make && make install
@@ -107,3 +107,7 @@
 	- ./configure --prefix=/g/pkg CFLAGS=-I/g/pkg/include CXXFLAGS=-I/g/pkg/include LDFLAGS=-L/g/pkg/lib\ -Wl,-rpath,/g/ngtcp2/openssl/build/lib PKG_CONFIG_PATH=/g/ngtcp2/openssl/build/lib/pkgconfig
 	- make -j4 # or: make -j$(nproc)
 
+# cassandra cpp-driver
+	- cmake .. -DCMAKE_INSTALL_PREFIX=/g/pkg
+	- make -j 4
+	- make install
