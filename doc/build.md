@@ -32,6 +32,7 @@
 	- see sea/gtest
 
 # gflags
+	- rm -rf /g/pkg/include/gflags /g/pkg/lib/libgflags*
 	- cmake -DCMAKE_INSTALL_PREFIX=/g/pkg -DBUILD_SHARED_LIBS=ON ..
 
 # glog:

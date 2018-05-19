@@ -20,6 +20,7 @@ namespace cfg {
 		google::InitGoogleLogging(argv[0]);
   		curl_global_init(CURL_GLOBAL_DEFAULT);
 		LOG(ERROR) << "listening on: " << FLAGS_addr << " " << FLAGS_port;
+		return true;
 	}
 	void cleanup() {
 		curl_global_cleanup();
