@@ -4,6 +4,7 @@
 	- make install
 
 # boost
+	- rm -rf /g/pkg/include/boost /g/pkg/lib/libboost_*
 	- ./bootstrap.sh --prefix=/g/pkg
 	- ./b2 variant=release install
 
