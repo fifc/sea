@@ -1315,7 +1315,6 @@ function WebSocket (url, protocols) {
 }
 
 var websocket = require('websocket-stream')
-var urlModule = require('url')
 
 function buildUrl (opts, client) {
   var protocol = opts.protocol === 'wxs' ? 'wss' : 'ws'
@@ -1354,30 +1353,18 @@ function createWebSocket (client, opts) {
 }
 
 function buildBuilder (client, opts) {
-  if (!opts.hostname) {
-    opts.hostname = opts.host
-  }
+  opts.hostname = opts.hostname || opts.host
 
   if (!opts.hostname) {
-    // Throwing an error in a Web Worker if no `hostname` is given, because we
-    // can not determine the `hostname` automatically.  If connecting to
-    // localhost, please supply the `hostname` as an argument.
-    if (typeof (document) === 'undefined') {
-      throw new Error('Could not determine host. Specify host manually.')
-    }
-    var parsed = urlModule.parse(document.URL)
-    opts.hostname = parsed.hostname
-
-    if (!opts.port) {
-      opts.port = parsed.port
-    }
+    throw new Error('Could not determine host. Specify host manually.')
   }
+
   return createWebSocket(client, opts)
 }
 
 module.exports = buildBuilder
 
-},{"url":58,"websocket-stream":88}],6:[function(require,module,exports){
+},{"websocket-stream":88}],6:[function(require,module,exports){
 (function (process){
 'use strict'
 
@@ -1683,6 +1670,10 @@ function connect (brokerUrl, opts) {
     throw new Error('Missing clientId for unclean clients')
   }
 
+  if (opts.protocol) {
+    opts.defaultProtocol = opts.protocol
+  }
+
   function wrapper (client) {
     if (opts.servers) {
       if (!client._reconnectCount || client._reconnectCount === opts.servers.length) {
@@ -1691,6 +1682,7 @@ function connect (brokerUrl, opts) {
 
       opts.host = opts.servers[client._reconnectCount].host
       opts.port = opts.servers[client._reconnectCount].port
+      opts.protocol = (!opts.servers[client._reconnectCount].protocol ? opts.defaultProtocol : opts.servers[client._reconnectCount].protocol)
       opts.hostname = opts.host
 
       client._reconnectCount++
