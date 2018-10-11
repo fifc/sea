@@ -101,11 +101,12 @@ function flush (queue) {
   }
 }
 
-function storeAndSend (client, packet, cb) {
+function storeAndSend (client, packet, cb, cbStorePut) {
   client.outgoingStore.put(packet, function storedPacket (err) {
     if (err) {
       return cb && cb(err)
     }
+    cbStorePut()
     sendPacket(client, packet, cb)
   })
 }
@@ -375,6 +376,7 @@ MqttClient.prototype._checkDisconnecting = function (callback) {
  *    {Number} qos - qos level to publish on
  *    {Boolean} retain - whether or not to retain the message
  *    {Boolean} dup - whether or not mark a message as duplicate
+ *    {Function} cbStorePut - function(){} called when message is put into `outgoingStore`
  * @param {Function} [callback] - function(err){}
  *    called when publish succeeds or fails
  * @returns {MqttClient} this - for chaining
@@ -431,13 +433,12 @@ MqttClient.prototype.publish = function (topic, message, opts, callback) {
   switch (opts.qos) {
     case 1:
     case 2:
-
       // Add to callbacks
       this.outgoing[packet.messageId] = callback || nop
-      this._sendPacket(packet)
+      this._sendPacket(packet, undefined, opts.cbStorePut)
       break
     default:
-      this._sendPacket(packet, callback)
+      this._sendPacket(packet, callback, opts.cbStorePut)
       break
   }
 
@@ -870,9 +871,12 @@ MqttClient.prototype._cleanUp = function (forced, done) {
  * @param {String} type - packet type (see `protocol`)
  * @param {Object} packet - packet options
  * @param {Function} cb - callback when the packet is sent
+ * @param {Function} cbStorePut - called when message is put into outgoingStore
  * @api private
  */
-MqttClient.prototype._sendPacket = function (packet, cb) {
+MqttClient.prototype._sendPacket = function (packet, cb, cbStorePut) {
+  cbStorePut = cbStorePut || nop
+
   if (!this.connected) {
     if (((packet.qos || 0) === 0 && this.queueQoSZero) || packet.cmd !== 'publish') {
       this.queue.push({ packet: packet, cb: cb })
@@ -882,6 +886,7 @@ MqttClient.prototype._sendPacket = function (packet, cb) {
         if (err) {
           return cb && cb(err)
         }
+        cbStorePut()
       })
     } else if (cb) {
       cb(new Error('No connection to broker'))
@@ -897,7 +902,7 @@ MqttClient.prototype._sendPacket = function (packet, cb) {
     case 'publish':
       break
     case 'pubrel':
-      storeAndSend(this, packet, cb)
+      storeAndSend(this, packet, cb, cbStorePut)
       return
     default:
       sendPacket(this, packet, cb)
@@ -907,7 +912,7 @@ MqttClient.prototype._sendPacket = function (packet, cb) {
   switch (packet.qos) {
     case 2:
     case 1:
-      storeAndSend(this, packet, cb)
+      storeAndSend(this, packet, cb, cbStorePut)
       break
     /**
      * no need of case here since it will be caught by default
