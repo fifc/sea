@@ -554,6 +554,10 @@ MqttClient.prototype.subscribe = function () {
     messageId: this._nextId()
   }
 
+  if (opts.properties) {
+    packet.properties = opts.properties
+  }
+
   if (!subs.length) {
     callback(null, [])
     return
