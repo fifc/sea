@@ -1285,9 +1285,9 @@ MqttClient.prototype.getLastMessageId = function () {
  * _resubscribe
  * @api private
  */
-MqttClient.prototype._resubscribe = function () {
+MqttClient.prototype._resubscribe = function (connack) {
   if (!this._firstConnection &&
-      this.options.clean &&
+      (this.options.clean || (this.options.protocolVersion === 5 && !connack.sessionPresent)) &&
       Object.keys(this._resubscribeTopics).length > 0) {
     if (this.options.resubscribe) {
       this._resubscribeTopics.resubscribe = true
@@ -1314,7 +1314,7 @@ MqttClient.prototype._onConnect = function (packet) {
   var that = this
 
   this._setupPingTimer()
-  this._resubscribe()
+  this._resubscribe(packet)
 
   this.connected = true
 
@@ -1423,7 +1423,7 @@ function buildProxy () {
   var proxy = new Transform()
   proxy._write = function (chunk, encoding, next) {
     my.sendSocketMessage({
-      data: chunk,
+      data: chunk.buffer,
       success: function () {
         next()
       },
@@ -1700,7 +1700,7 @@ if (IS_BROWSER) {
 
 }).call(this,require('_process'))
 },{"_process":116,"url":134,"websocket-stream":151}],6:[function(require,module,exports){
-(function (Buffer){
+(function (process,Buffer){
 'use strict'
 
 var Transform = require('readable-stream').Transform
@@ -1715,7 +1715,7 @@ function buildProxy () {
   var proxy = new Transform()
   proxy._write = function (chunk, encoding, next) {
     socketTask.send({
-      data: chunk,
+      data: chunk.buffer,
       success: function () {
         next()
       },
@@ -1781,7 +1781,7 @@ function bindEventHandler () {
   })
 
   socketTask.onError(function (res) {
-    stream.destroy(res)
+    stream.destroy(new Error(res.errMsg))
   })
 }
 
@@ -1807,6 +1807,27 @@ function buildStream (client, opts) {
 
   proxy = buildProxy()
   stream = duplexify.obj()
+  stream._destroy = function (err, cb) {
+    socketTask.close({
+      success: function () {
+        cb && cb(err)
+      }
+    })
+  }
+
+  var destroyRef = stream.destroy
+  stream.destroy = function () {
+    stream.destroy = destroyRef
+
+    var self = this
+    process.nextTick(function () {
+      socketTask.close({
+        fail: function () {
+          self._destroy(new Error())
+        }
+      })
+    })
+  }.bind(stream)
 
   bindEventHandler()
 
@@ -1815,8 +1836,8 @@ function buildStream (client, opts) {
 
 module.exports = buildStream
 
-}).call(this,require("buffer").Buffer)
-},{"buffer":12,"duplexify":17,"readable-stream":131}],7:[function(require,module,exports){
+}).call(this,require('_process'),require("buffer").Buffer)
+},{"_process":116,"buffer":12,"duplexify":17,"readable-stream":131}],7:[function(require,module,exports){
 (function (process){
 'use strict'
 
