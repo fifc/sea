@@ -15,7 +15,7 @@
 	- make && make install
 
 # nghttp2
-	- rm -rf /g/pkg/include/nghttp2 /g/pkg/lib/libnghttp2*
+	- rm -rf /g/pkg/include/nghttp2 /g/pkg/lib/libnghttp2* /g/pkg/bin/nghttp*
 	- autoreconf -i
 	- automake
 	- autoconf
@@ -23,7 +23,7 @@
 	- make -j 4 && make install
 
 # curl
-	- rm -rf /g/pkg/include/curl /g/pkg/lib/libcurl.*
+	- rm -rf /g/pkg/include/curl /g/pkg/lib/libcurl.* /g/pkg/bin/curl
 	- ./buildconf
 	- ./configure --prefix=/g/pkg --with-nghttp2=/g/pkg --with-libssh2
 	- make && make install
