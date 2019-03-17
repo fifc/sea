@@ -12,6 +12,7 @@
 
 #include "handler.h"
 #include "cfg.h"
+#include "uid.h"
 #include "picode.h"
 #include "mimetypes.h"
 
@@ -41,7 +42,7 @@ static void init_req_handler(const SeaHandler *handler, http2 *server) {
       auto mimetype = get_mimetype(path);
       if (mimetype.empty()) {
         res.write_head(404);
-        res.end();
+        res.end("unknow mime type");
 	return;
       }
 
@@ -54,7 +55,7 @@ static void init_req_handler(const SeaHandler *handler, http2 *server) {
         res.end(data);
       } else {
         res.write_head(404);
-        res.end();
+        res.end("404 not found");
       }
       //std::string data = req.uri().raw_query + "\n";
     });
@@ -63,6 +64,11 @@ static void init_req_handler(const SeaHandler *handler, http2 *server) {
       std::string img;
       CreatePicVericode(&img);
       res.end(img);
+    });
+    server->handle("/uid/", [](const request &req, const response &res) {
+      res.write_head(200, {{"Content-Type", {"text/plain"}}});
+      auto content = GetUid(req.uri().raw_query);
+      res.end(content);
     });
     server->handle("/secret/", [](const request &req, const response &res) {
       res.write_head(301);
@@ -130,7 +136,8 @@ int main(int argc, char *argv[]) {
   if (isatty(fileno(stdout))) {
 	std::string cl = "\33[0;32m";
 	std::string el = "\33[m";
-	std::cout << "port:" << cl << FLAGS_port << el << ", key: " << cl << FLAGS_key << el << ", cert: " << cl << FLAGS_cert << el << std::endl;
+	std::cout << "port:" << cl << FLAGS_port << el << ", key: " << cl << FLAGS_key << el
+		<< ", cert: " << cl << FLAGS_cert << el << std::endl;
   }
 
   SeaHandler *handler = nullptr;

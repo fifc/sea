@@ -1,8 +1,9 @@
 bin_PROGRAMS = sea
-sea_SOURCES = proto.cc main.cc cfg.cc picode.cc mimetypes.cc handler.cc db_mgr.cc
+sea_SOURCES = proto.cc main.cc cfg.cc picode.cc mimetypes.cc handler.cc db_mgr.cc iset.c uid.cc
 include_HEADERS=cfg.h picode.h mimetypes.h handler.h db_mgr.h
 sea_CPPFLAGS =
-sea_CXXFLAGS = -pthread -I${abs_top_srcdir} -I${abs_top_srcdir}/lib
+sea_CFLAGS = -pthread -I${abs_top_srcdir} -I${abs_top_srcdir}/lib
+sea_CXXFLAGS = ${CFLAGS}
 sea_LDFLAGS = -pthread -L${abs_top_builddir}/lib -L${abs_top_builddir}/sms -Wl,--no-as-needed -lgrpc++_reflection -Wl,--as-needed -ldl
 sea_LDADD = -lgw -lprotobuf -lgrpc++ -lgrpc -lgflags -lglog -lcurl -lnghttp2_asio -lboost_system -lssl -lcrypto -ljemalloc -lpng -lpq -lsms
 
