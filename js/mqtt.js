@@ -544,6 +544,7 @@ MqttClient.prototype.subscribe = function () {
           currentOpts.nl = opts.nl
           currentOpts.rap = opts.rap
           currentOpts.rh = opts.rh
+          currentOpts.properties = opts.properties
         }
         subs.push(currentOpts)
       }
@@ -563,6 +564,7 @@ MqttClient.prototype.subscribe = function () {
             currentOpts.nl = obj[k].nl
             currentOpts.rap = obj[k].rap
             currentOpts.rh = obj[k].rh
+            currentOpts.properties = opts.properties
           }
           subs.push(currentOpts)
         }
@@ -597,6 +599,7 @@ MqttClient.prototype.subscribe = function () {
           topic.nl = sub.nl || false
           topic.rap = sub.rap || false
           topic.rh = sub.rh || 0
+          topic.properties = sub.properties
         }
         that._resubscribeTopics[sub.topic] = topic
         topics.push(sub.topic)
@@ -1276,8 +1279,7 @@ MqttClient.prototype._handlePubrel = function (packet, callback) {
  * @api private
  */
 MqttClient.prototype._handleDisconnect = function (packet) {
-  this.emit('close', packet)
-  this.end(true)
+  this.emit('disconnect', packet)
 }
 
 /**
@@ -1307,12 +1309,22 @@ MqttClient.prototype.getLastMessageId = function () {
  * @api private
  */
 MqttClient.prototype._resubscribe = function (connack) {
+  var _resubscribeTopicsKeys = Object.keys(this._resubscribeTopics)
   if (!this._firstConnection &&
       (this.options.clean || (this.options.protocolVersion === 5 && !connack.sessionPresent)) &&
-      Object.keys(this._resubscribeTopics).length > 0) {
+      _resubscribeTopicsKeys.length > 0) {
     if (this.options.resubscribe) {
-      this._resubscribeTopics.resubscribe = true
-      this.subscribe(this._resubscribeTopics)
+      if (this.options.protocolVersion === 5) {
+        for (var topicI = 0; topicI < _resubscribeTopicsKeys.length; topicI++) {
+          var resubscribeTopic = {}
+          resubscribeTopic[_resubscribeTopicsKeys[topicI]] = this._resubscribeTopics[_resubscribeTopicsKeys[topicI]]
+          resubscribeTopic.resubscribe = true
+          this.subscribe(resubscribeTopic, {properties: resubscribeTopic[_resubscribeTopicsKeys[topicI]].properties})
+        }
+      } else {
+        this._resubscribeTopics.resubscribe = true
+        this.subscribe(this._resubscribeTopics)
+      }
     } else {
       this._resubscribeTopics = {}
     }
