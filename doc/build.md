@@ -92,13 +92,13 @@
 
 # jsoncpp
 	- export DESTDIR=/g/pkg
-	- make build && cd build
+	- mkdir build && cd build
 	- meson --buildtype release --default-library shared .. build-release
 	- ninja -v -C build-release install
 	- move it from $DESTDIR/usr/local to $DESTDIR
 
 # ss-libev
-	- ./configure CC=gcc-8 --prefix=/opt --disable-documentation
+	- ./configure CC=gcc-10 --prefix=/opt --disable-documentation
 
 # librdkafka
 	- apt install liblz4-dev libsasl2-dev
