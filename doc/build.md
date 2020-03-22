@@ -45,7 +45,7 @@
 	- make VERBOSE=1
 
 # postgresql
-	- rm -rf /g/rt/include/postgres* /g/rt/lib/libpq.* /g/rt/lib/libpg* /g/rt/bin/psql /g/rt/bin/pgbench /g/rt/bin/pg_*
+	- rm -rf /g/rt/include/postgres* /g/rt/lib/libpq.* /g/rt/lib/libpg* /g/rt/bin/psql /g/rt/bin/initdb /g/rt/bin/pgbench /g/rt/bin/pg_*
 	- curl -OL https://ftp.postgresql.org/pub/snapshot/dev/postgresql-snapshot.tar.bz2
 	- ./configure --prefix=/g/rt --with-openssl
 
