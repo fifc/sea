@@ -4,7 +4,7 @@
 	- make install
 
 # boost
-	- rm -rf /g/rt/include/boost /g/rt/lib/libboost_* /g/rt/lib/cmake/boost_*
+	- rm -rf /g/rt/include/boost /g/rt/lib/libboost_* /g/rt/lib/cmake/boost_* /g/rt/lib/cmake/Boost*
 	- ./bootstrap.sh --prefix=/g/rt
 	- ./b2 variant=release install
 
