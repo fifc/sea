@@ -22,13 +22,13 @@ inline void iset_insert(iset* ids, unsigned long value) {
 	iset_add(ids, value, value + 1);
 }
 
-inline void iset_init(iset* ids) {
+void iset_init(iset* ids) {
 	ids->num_ = 0;
 }
 
 unsigned long iset_sub(iset* ids, unsigned long start, unsigned long total, iset* res);
 
-inline void iset_free(iset* is) {
+void iset_free(iset* is) {
 	if (is->num_ != 0) {
 		free(is->seg_);
 		is->num_ = 0;

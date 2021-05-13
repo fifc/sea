@@ -15,9 +15,17 @@ unsigned long iset_map(iset* is, int (*handler)(unsigned long*, void *), void* d
 
 int iset_has(iset* is, unsigned long value) {
 	unsigned long i = 0;
-	for ( ; i < is->num_; ++i) {
-		if (value >= is->seg_ [i << 1lu] && value >= is->seg_[(i << 1lu) + 1])
+	unsigned long j = is->num_;
+
+	while (i<j) {
+		unsigned long m = i+((j-i)>>1);
+		if (value >= is->seg_[(m << 1lu)+1]) {
+			i = m+1;
+		} else if (value < is->seg_[m << 1lu]) {
+			j = m;
+		} else {
 			return 1;
+		}
 	}
 
 	return 0;
@@ -307,6 +315,7 @@ int main() {
 	printf("%lu\n",iset_start(&ids, 2000000));
 	printf("%lu\n",iset_start(&ids, 2000000));
 	printf("%lu\n",iset_start(&ids, 2000000));
+	printf("%lu\n",iset_start(&ids, 2000008));
 	printf("%lu\n",iset_start(&ids, 1200005));
 	printf("%lu\n",iset_start(&ids, 1200005));
 	printf("%lu\n",iset_start(&ids, 1200005));
@@ -317,6 +326,14 @@ int main() {
 	iset_dump(&ids);
 	printf("%lu\n",iset_start(&ids, 1200003));
 	iset_dump(&ids);
+
+	long arr[]={1000002,1099999,1100000,0,2000006,2000007,2000008,0,9999999,10000000,0};
+	for (int i = 0; i < sizeof arr/sizeof arr[0]; ++i) {
+		if (arr[i] == 0) {
+			printf("\n"); continue;
+		}
+		printf("%lu: %d ", arr[i], iset_has(&ids, arr[i])); 
+	}
 
 	iset_free(&ids);
 	return 0;
