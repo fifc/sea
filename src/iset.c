@@ -302,6 +302,8 @@ int main() {
 #endif
 
 	iset_add(&ids, 1000000, 10000000);
+
+	char out[40];
 	printf("%lu\n",iset_start(&ids, 1200000));
 	printf("%lu\n",iset_start(&ids, 1200000));
 	printf("%lu\n",iset_start(&ids, 1200000));
